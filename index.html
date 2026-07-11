@@ -165,52 +165,44 @@
   .btn-ghost{ border:1px solid var(--line-strong); color:var(--text); background:rgba(255,255,255,0.03); }
   .btn-ghost:hover{ transform:translateY(-4px) rotate(1deg); background:rgba(255,79,163,0.08); border-color:var(--pink); }
 
-  .hero-panel{
-    position:relative; padding:28px; border-radius:32px;
-    background:linear-gradient(180deg, rgba(23,15,43,0.95), rgba(32,22,58,0.92));
-    border:1px solid var(--line); overflow:hidden;
-    opacity:0; animation:fadeUp 1s ease .55s forwards, bob 6s ease-in-out 1.7s infinite;
+  .avatar-wrap{
+    position:relative; display:flex; justify-content:center;
+    opacity:0; animation:fadeUp 1.05s ease .55s forwards, bob 6s ease-in-out 1.7s infinite;
   }
-  .hero-panel::before{
-    content:''; position:absolute; inset:auto -60px -60px auto; width:220px; height:220px;
-    background:radial-gradient(circle, rgba(180,123,255,0.28), transparent 70%);
-    pointer-events:none;
+  .avatar-frame{
+    position:relative; width:100%; max-width:290px; aspect-ratio:1/1; border-radius:32px; padding:6px;
+    overflow:hidden; isolation:isolate;
   }
-  .profile-top{
-    display:flex; align-items:center; gap:18px; margin-bottom:22px;
-  }
-  .profile-badge{
-    width:92px; height:92px; border-radius:26px; padding:4px;
+  .avatar-frame::before{
+    content:''; position:absolute; inset:-60%; z-index:0;
     background:conic-gradient(from 0deg, var(--pink), var(--lavender), var(--cyan), var(--pink));
-    animation:spinRing 6s linear infinite;
   }
-  .profile-badge span{
+  .avatar-inner{
+    position:relative; z-index:1; width:100%; height:100%; border-radius:26px;
+    overflow:hidden; background:linear-gradient(160deg, var(--surface-2), var(--surface));
+    display:flex; align-items:center; justify-content:center;
+  }
+  .avatar-inner::before{
+    content:''; position:absolute; inset:0; z-index:2; pointer-events:none;
+    background:radial-gradient(circle at 30% 20%, rgba(180,123,255,0.28), transparent 55%);
+  }
+  .avatar-img{
+    position:absolute; inset:0; width:100%; height:100%; object-fit:cover;
+    transition:transform .7s cubic-bezier(.2,.8,.3,1);
+  }
+  .avatar-frame:hover .avatar-img{ transform:scale(1.08); }
+  .avatar-fallback{
     display:flex; align-items:center; justify-content:center; width:100%; height:100%;
-    border-radius:22px; background:linear-gradient(160deg, var(--surface-2), var(--surface));
-    font-family:'Baloo 2',cursive; font-size:2.3rem; color:var(--text);
+    font-family:'Baloo 2',cursive; font-weight:800; font-size:88px;
+    background:linear-gradient(160deg, var(--pink), var(--lavender));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; opacity:0.6;
   }
-  .profile-title h3{ font-size:1.55rem; line-height:1.15; }
-  .profile-title p{ color:var(--muted); font-size:14px; line-height:1.75; margin-top:6px; }
-  .profile-list{
-    display:grid; gap:14px;
+  .avatar-sticker{
+    position:absolute; bottom:-14px; right:-10px; background:var(--surface); border:1px solid var(--line-strong);
+    border-radius:50%; width:48px; height:48px; display:flex; align-items:center; justify-content:center;
+    font-size:1.3rem; box-shadow:0 8px 20px -6px rgba(255,79,163,0.5); animation:wiggle 3.5s ease-in-out infinite; z-index:3;
   }
-  .profile-item{
-    display:flex; justify-content:space-between; gap:16px;
-    padding:15px 16px; border-radius:18px; background:rgba(255,255,255,0.03);
-    border:1px solid var(--line);
-  }
-  .profile-item .label{
-    font-family:'JetBrains Mono',monospace; font-size:11px; text-transform:uppercase;
-    color:var(--muted); letter-spacing:1px;
-  }
-  .profile-item .value{
-    text-align:right; color:var(--text); font-weight:700; max-width:60%;
-  }
-  .profile-note{
-    margin-top:18px; padding:14px 16px; border-radius:18px;
-    background:rgba(109,227,255,0.06); border:1px solid rgba(109,227,255,0.25);
-    color:var(--cyan); font-size:13px; line-height:1.7;
-  }
+  @keyframes wiggle{ 0%,100%{transform:rotate(-10deg);} 50%{transform:rotate(12deg);} }
 
   section{ position:relative; z-index:2; padding:120px 6vw; max-width:1400px; margin:0 auto; }
   .section-head{ margin-bottom:56px; max-width:760px; }
@@ -423,9 +415,7 @@
   @media (max-width:900px){
     .nav-links{display:none;}
     .hero{padding-top:105px;}
-    .profile-top{align-items:flex-start;}
-    .profile-item{flex-direction:column;}
-    .profile-item .value{text-align:left; max-width:100%;}
+    .avatar-frame{max-width:230px;}
   }
   @media (max-width:680px){
     .info-strip,.stats-row{ grid-template-columns:1fr; }
@@ -477,36 +467,14 @@
       </div>
     </div>
 
-    <div class="hero-panel">
-      <div class="profile-top">
-        <div class="profile-badge"><span>TN</span></div>
-        <div class="profile-title">
-          <h3>Hồ sơ học tập</h3>
-          <p>Một phiên bản ngắn gọn về thông tin cá nhân và định hướng học tập trong học phần này.</p>
+    <div class="avatar-wrap">
+      <div class="avatar-frame">
+        <div class="avatar-inner">
+          <img class="avatar-img" src="avt.jpg" alt="Ảnh cá nhân của Đinh Thị Thúy Ngà"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <span class="avatar-fallback" style="display:none;">TN</span>
         </div>
-      </div>
-
-      <div class="profile-list">
-        <div class="profile-item">
-          <span class="label">Họ và tên</span>
-          <span class="value">Đinh Thị Thúy Ngà</span>
-        </div>
-        <div class="profile-item">
-          <span class="label">Mã sinh viên</span>
-          <span class="value">25041743</span>
-        </div>
-        <div class="profile-item">
-          <span class="label">Ngành học</span>
-          <span class="value">Ngôn ngữ và văn hóa Trung Quốc</span>
-        </div>
-        <div class="profile-item">
-          <span class="label">Trường</span>
-          <span class="value">Đại học Ngoại ngữ - ĐHQGHN</span>
-        </div>
-      </div>
-
-      <div class="profile-note">
-        Portfolio này tập trung vào quá trình hình thành kỹ năng số, khả năng học tập độc lập và việc ứng dụng AI một cách minh bạch trong môi trường đại học.
+        <div class="avatar-sticker">🌸</div>
       </div>
     </div>
   </div>
